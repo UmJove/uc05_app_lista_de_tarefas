@@ -77,4 +77,3 @@ def deletar_tarefa(atividade, data, hora):
     messagebox.showinfo("Sucesso", "Tarefa deletada com sucesso!")
 
 
-
