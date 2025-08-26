@@ -1,8 +1,10 @@
 import json
 from datetime import datetime
 from tkinter import messagebox
+import customtkinter as ctk
+import	tkinter
 
-def criar_tarefa(atividade, data, hora):
+def salvar(atividade, data, hora):
     agora = datetime.now()
     try:
         data_obj = datetime.strptime(data, "%d/%m/%Y")
@@ -55,7 +57,7 @@ def deletar_tarefa(atividade, data, hora):
         with open("tarefas.json", "r") as f:
             tarefas = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
-        messagebox.showerror("Erro", "Nenhuma tarefa encontrada para deletar.")
+        messagebox.showerror("Nenhuma tarefa encontrada para deletar.")
         return
 
     # Filtra as tarefas para remover a que bate com os parâmetros
@@ -73,3 +75,6 @@ def deletar_tarefa(atividade, data, hora):
         json.dump(tarefas_filtradas, f, indent=4)
 
     messagebox.showinfo("Sucesso", "Tarefa deletada com sucesso!")
+
+
+
