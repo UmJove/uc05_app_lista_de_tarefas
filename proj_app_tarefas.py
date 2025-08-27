@@ -5,42 +5,6 @@ from back import salvar
 from back import deletar_tarefa
 import json
 
-def lista_atualizada():
-    titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
-    titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
-
-    label_status_topo = ctk.CTkLabel(frame_lista, text="Status")
-    label_status_topo.grid(row=1, column=0, padx=(15))
-
-    label_atividade_topo = ctk.CTkLabel(frame_lista, text="Atividade")
-    label_atividade_topo.grid(row=1, column=1, padx=(5,15), sticky="w")
-
-    label_dia_topo = ctk.CTkLabel(frame_lista, text="Dia")
-    label_dia_topo.grid(row=1, column=2, padx=(15))
-
-    label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
-    label_hora_topo.grid(row=1, column=3, padx=(15))
-
-    # Lê tarefas do JSON
-    try:
-        with open("tarefas.json", "r") as f:
-            tarefas = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        tarefas = []
-
-    for i, tarefa in enumerate(tarefas, start=2):
-        check_var = ctk.StringVar() 
-        checkbox = ctk.CTkCheckBox(frame_lista, text="", width=20, variable=check_var, onvalue="on", offvalue="off", checkbox_width=20, checkbox_height=20, corner_radius=10, fg_color="darkgreen", hover_color="green")
-        checkbox.grid(row=i, column=0, padx=(15))
-
-        label_atividade = ctk.CTkLabel(frame_lista, text=tarefa["atividade"])
-        label_atividade.grid(row=i, column=1, padx=(5,15), sticky="w")
-
-        label_dia = ctk.CTkLabel(frame_lista, text=tarefa["data"])
-        label_dia.grid(row=i, column=2, padx=(15))
-
-        label_hora = ctk.CTkLabel(frame_lista, text=tarefa["hora"])
-        label_hora.grid(row=i, column=3, padx=(15))
 
 
 
@@ -151,57 +115,124 @@ def excluir_tarefas():
     btn_excluir = ctk.CTkButton(excluir_tarefas_win, text="Excluir selecionadas", command=confirmar_exclusao)
     btn_excluir.pack(pady=20)
 
+def main():
+    main = ctk.CTk()
+    main.title("My Tasks")
+    main.geometry("500x600")
 
-# Definino modo e core pardrões
+    titulo_main = ctk.CTkLabel(main, text="My Tasks", font=("Helvetica", 16))
+    titulo_main.pack(pady=(20, 10))
+
+    #Frame botões
+    frame_botoes = ctk.CTkFrame(main, width=500, fg_color="transparent")
+    frame_botoes.pack(pady=10)
+
+    btn_criar_tarefa = ctk.CTkButton(frame_botoes, text="Criar nova tarefa", command=criar_tarefa)
+    btn_criar_tarefa.pack(side="left", padx=(0, 80))
+
+    btn_editar_lista = ctk.CTkButton(frame_botoes, text="Excluir tarefas", command=excluir_tarefas)
+    btn_editar_lista.pack(side="right", padx=(80, 0))
+
+
+    # Frame de lista de atividades
+    frame_lista = ctk.CTkScrollableFrame(main, width=430, height=400)
+    frame_lista.pack(pady=5)
+
+    frame_lista.columnconfigure([0,2,3], weight=0)
+    frame_lista.columnconfigure(1, weight=1)
+
+    lista_atualizada()
+
+    btn_atualizar = ctk.CTkButton(main, text="Atualizar lista", command=lista_atualizada)
+    btn_atualizar.pack(pady=(20))
+
+    titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
+    titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
+
+    label_status_topo = ctk.CTkLabel(frame_lista, text="Status")
+    label_status_topo.grid(row=1, column=0, padx=(15))
+
+    label_atividade_topo = ctk.CTkLabel(frame_lista, text="Atividade")
+    label_atividade_topo.grid(row=1, column=1, padx=(5,15), sticky="w")
+
+    label_dia_topo = ctk.CTkLabel(frame_lista, text="Dia")
+    label_dia_topo.grid(row=1, column=2, padx=(15))
+
+    label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
+    label_hora_topo.grid(row=1, column=3, padx=(15))
+    
+    def lista_atualizada():
+        titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
+        titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
+
+        label_status_topo = ctk.CTkLabel(frame_lista, text="Status")
+        label_status_topo.grid(row=1, column=0, padx=(15))
+
+        label_atividade_topo = ctk.CTkLabel(frame_lista, text="Atividade")
+        label_atividade_topo.grid(row=1, column=1, padx=(5,15), sticky="w")
+
+        label_dia_topo = ctk.CTkLabel(frame_lista, text="Dia")
+        label_dia_topo.grid(row=1, column=2, padx=(15))
+
+        label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
+        label_hora_topo.grid(row=1, column=3, padx=(15))
+
+        # Lê tarefas do JSON
+        try:
+            with open("tarefas.json", "r") as f:
+                tarefas = json.load(f)
+        except (FileNotFoundError, json.JSONDecodeError):
+            tarefas = []
+
+        for i, tarefa in enumerate(tarefas, start=2):
+            check_var = ctk.StringVar() 
+            checkbox = ctk.CTkCheckBox(frame_lista, text="", width=20, variable=check_var, onvalue="on", offvalue="off", checkbox_width=20, checkbox_height=20, corner_radius=10, fg_color="darkgreen", hover_color="green")
+            checkbox.grid(row=i, column=0, padx=(15))
+
+            label_atividade = ctk.CTkLabel(frame_lista, text=tarefa["atividade"])
+            label_atividade.grid(row=i, column=1, padx=(5,15), sticky="w")
+
+            label_dia = ctk.CTkLabel(frame_lista, text=tarefa["data"])
+            label_dia.grid(row=i, column=2, padx=(15))
+
+            label_hora = ctk.CTkLabel(frame_lista, text=tarefa["hora"])
+            label_hora.grid(row=i, column=3, padx=(15))
+
+
+
+login_win = ctk.CTk()
+login_win.title("Login")
+login_win.geometry("400x250")
+
+# Configurações de aparência
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
-main = ctk.CTk()
-main.title("My Tasks")
-main.geometry("500x600")
+titulo_login = ctk.CTkLabel(login_win, text="Login")
+titulo_login.grid(row=0,column=0,columnspan=2, pady=10)
 
-titulo_main = ctk.CTkLabel(main, text="My Tasks", font=("Helvetica", 16))
-titulo_main.pack(pady=(20, 10))
+# Rótulos e entradas
+user_label = ctk.CTkLabel(login_win, text="Usuário")
+user_label.grid(row=1,column=0, padx=15, pady=10)
 
-#Frame botões
-frame_botoes = ctk.CTkFrame(main, width=500, fg_color="transparent")
-frame_botoes.pack(pady=10)
+user_entry = ctk.CTkEntry(login_win)
+user_entry.grid(row=1,column=1, padx=15, pady=10)
 
-btn_criar_tarefa = ctk.CTkButton(frame_botoes, text="Criar nova tarefa", command=criar_tarefa)
-btn_criar_tarefa.pack(side="left", padx=(0, 80))
+senha_label = ctk.CTkLabel(login_win, text="Senha")
+senha_label.grid(row=2,column=0, padx=15, pady=10)
 
-btn_editar_lista = ctk.CTkButton(frame_botoes, text="Excluir tarefas", command=excluir_tarefas)
-btn_editar_lista.pack(side="right", padx=(80, 0))
+senha_entry = ctk.CTkEntry(login_win)
+senha_entry.grid(row=2,column=1, padx=15, pady=10)
 
+login_win.columnconfigure(0, weight=1)
+login_win.columnconfigure(1, weight=1)
 
+# Botões
+btn_confirma = ctk.CTkButton(login_win, text="Confirma")
+btn_confirma.grid(row=3, column=0, pady=10)
 
-# Frame de lista de atividades
-frame_lista = ctk.CTkScrollableFrame(main, width=430, height=400)
-frame_lista.pack(pady=5)
+btn_cadastro = ctk.CTkButton(login_win, text="Cadastrar usuário")
+btn_cadastro.grid(row=3, column=1, pady=5)
 
-frame_lista.columnconfigure([0,2,3], weight=0)
-frame_lista.columnconfigure(1, weight=1)
-
-lista_atualizada()
-
-btn_atualizar = ctk.CTkButton(main, text="Atualizar lista", command=lista_atualizada)
-btn_atualizar.pack(pady=(20))
-
-titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
-titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
-
-label_status_topo = ctk.CTkLabel(frame_lista, text="Status")
-label_status_topo.grid(row=1, column=0, padx=(15))
-
-label_atividade_topo = ctk.CTkLabel(frame_lista, text="Atividade")
-label_atividade_topo.grid(row=1, column=1, padx=(5,15), sticky="w")
-
-label_dia_topo = ctk.CTkLabel(frame_lista, text="Dia")
-label_dia_topo.grid(row=1, column=2, padx=(15))
-
-label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
-label_hora_topo.grid(row=1, column=3, padx=(15))
-
-
-
-main.mainloop()
+# Iniciar a aplicação
+login_win.mainloop()

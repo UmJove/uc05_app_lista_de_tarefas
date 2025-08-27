@@ -2,7 +2,6 @@ import json
 from datetime import datetime
 from tkinter import messagebox
 import customtkinter as ctk
-import	tkinter
 
 def salvar(atividade, data, hora, parent=None):
     agora = datetime.now()
