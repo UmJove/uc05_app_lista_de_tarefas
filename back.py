@@ -4,7 +4,7 @@ from tkinter import messagebox
 import customtkinter as ctk
 import	tkinter
 
-def salvar(atividade, data, hora):
+def salvar(atividade, data, hora, parent=None):
     agora = datetime.now()
     try:
         data_obj = datetime.strptime(data, "%d/%m/%Y")
@@ -16,7 +16,8 @@ def salvar(atividade, data, hora):
                 "Erro",
                 """O tempo que já passou é um rio que não volta para sua nascente. 
 Tentar marcar um compromisso no passado é como querer reescrever páginas já escritas no livro da vida — impossível e desnecessário. 
-O que podemos fazer é olhar para frente, aprender com o que vivemos e decidir com sabedoria onde investir nosso tempo daqui para frente, pois o presente é o único momento onde podemos agir e transformar nosso destino."""
+O que podemos fazer é olhar para frente, aprender com o que vivemos e decidir com sabedoria onde investir nosso tempo daqui para frente, pois o presente é o único momento onde podemos agir e transformar nosso destino.""",
+            parent=parent
             )
             return
 
@@ -38,26 +39,24 @@ O que podemos fazer é olhar para frente, aprender com o que vivemos e decidir c
         with open("tarefas.json", "w") as f:
             json.dump(tarefas, f, indent=4)
 
-        messagebox.showinfo("Sucesso", "Tarefa criada com sucesso!")
+        messagebox.showinfo("Sucesso", "Tarefa criada com sucesso!", parent=parent)
 
     except ValueError:
         messagebox.showerror(
             "Erro",
-            "Data ou hora inválida, use o formato dd/mm/aaaa para a data e hh:mm para a hora."
+            "Data ou hora inválida, use o formato dd/mm/aaaa para a data e hh:mm para a hora.",
+            parent=parent
         )
 
 
 
 
-
-
-
-def deletar_tarefa(atividade, data, hora):
+def deletar_tarefa(atividade, data, hora, parent=None):
     try:
         with open("tarefas.json", "r") as f:
             tarefas = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
-        messagebox.showerror("Nenhuma tarefa encontrada para deletar.")
+        messagebox.showerror("Nenhuma tarefa encontrada para deletar.", parent=parent)
         return
 
     # Filtra as tarefas para remover a que bate com os parâmetros
@@ -67,13 +66,13 @@ def deletar_tarefa(atividade, data, hora):
     ]
 
     if len(tarefas_filtradas) == len(tarefas):
-        messagebox.showinfo("Aviso", "Tarefa não encontrada.")
+        messagebox.showinfo("Aviso", "Tarefa não encontrada.", parent=parent)
         return
 
     # Salva a lista atualizada
     with open("tarefas.json", "w") as f:
         json.dump(tarefas_filtradas, f, indent=4)
 
-    messagebox.showinfo("Sucesso", "Tarefa deletada com sucesso!")
+    messagebox.showinfo("Sucesso", "Tarefa deletada com sucesso!", parent=parent)
 
 

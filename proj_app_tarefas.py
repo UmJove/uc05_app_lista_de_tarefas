@@ -48,7 +48,8 @@ def criar_tarefa():
     nova_tarefa = ctk.CTkToplevel()
     nova_tarefa.title("Nova tarefa")
     nova_tarefa.geometry("450x200")
-
+    nova_tarefa.focus()
+    nova_tarefa.attributes('-topmost', True)
 
     # ajustando colunas
     nova_tarefa.columnconfigure(0, weight=1)
@@ -87,21 +88,19 @@ def criar_tarefa():
     frame_btn_nova_tarefa.grid(row=3, column=0, columnspan=4, pady=15)
 
     # btn_salvar  = 
-    btn_salvar = ctk.CTkButton(frame_btn_nova_tarefa, text="Salvar", command=lambda: salvar(atividade=atividade_entry.get(), data=data_entry.get(), hora=hora_entry.get()))
+    btn_salvar = ctk.CTkButton(frame_btn_nova_tarefa, text="Salvar", command=lambda: salvar(atividade=atividade_entry.get(), data=data_entry.get(), hora=hora_entry.get(), parent=nova_tarefa))
     btn_salvar.pack(side="left", padx=(0, 50))
 
     btn_cancelar = ctk.CTkButton(frame_btn_nova_tarefa, text="Cancelar", fg_color="darkred", hover_color="#a83232", command=nova_tarefa.destroy)
     btn_cancelar.pack(side="right", padx=(50, 0))
 
-from back import deletar_tarefa
-import customtkinter as ctk
-from tkinter import messagebox
-import json
-
 def excluir_tarefas():
     excluir_tarefas_win = ctk.CTkToplevel()
     excluir_tarefas_win.title("Excluir tarefas")
     excluir_tarefas_win.geometry("500x300")
+    excluir_tarefas_win.focus()
+    excluir_tarefas_win.attributes('-topmost', True)
+
 
     # Cabeçalhos
     ctk.CTkLabel(excluir_tarefas_win, text="Status").grid(row=0, column=0, padx=15)
@@ -132,12 +131,12 @@ def excluir_tarefas():
     def confirmar_exclusao():
         selecionadas = [t for var, t in checkboxes if var.get()]
         if not selecionadas:
-            messagebox.showinfo("Aviso", "Nenhuma tarefa selecionada para exclusão.")
+            messagebox.showinfo("Aviso", "Nenhuma tarefa selecionada para exclusão.", parent=excluir_tarefas_win)
             return
         
         # Chama a função do back para deletar cada tarefa marcada
         for tarefa in selecionadas:
-            deletar_tarefa(tarefa["atividade"], tarefa["data"], tarefa["hora"])
+            deletar_tarefa(tarefa["atividade"], tarefa["data"], tarefa["hora"], parent=excluir_tarefas_win)
 
         excluir_tarefas_win.destroy()
 
@@ -171,7 +170,7 @@ btn_editar_lista.pack(side="right", padx=(80, 0))
 
 
 # Frame de lista de atividades
-frame_lista = ctk.CTkScrollableFrame(main, width=430)
+frame_lista = ctk.CTkScrollableFrame(main, width=430, height=400)
 frame_lista.pack(pady=5)
 
 frame_lista.columnconfigure([0,2,3], weight=0)
