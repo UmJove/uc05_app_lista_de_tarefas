@@ -116,53 +116,6 @@ def excluir_tarefas():
     btn_excluir.pack(pady=20)
 
 def main():
-    main = ctk.CTkToplevel()
-    main.title("My Tasks")
-    main.geometry("500x600")
-    main.attributes("-topmost", True)
-
-
-    titulo_main = ctk.CTkLabel(main, text="My Tasks", font=("Helvetica", 16))
-    titulo_main.pack(pady=(20, 10))
-
-    #Frame botões
-    frame_botoes = ctk.CTkFrame(main, width=500, fg_color="transparent")
-    frame_botoes.pack(pady=10)
-
-    btn_criar_tarefa = ctk.CTkButton(frame_botoes, text="Criar nova tarefa", command=criar_tarefa)
-    btn_criar_tarefa.pack(side="left", padx=(0, 80))
-
-    btn_editar_lista = ctk.CTkButton(frame_botoes, text="Excluir tarefas", command=excluir_tarefas)
-    btn_editar_lista.pack(side="right", padx=(80, 0))
-
-
-    # Frame de lista de atividades
-    frame_lista = ctk.CTkScrollableFrame(main, width=430, height=400)
-    frame_lista.pack(pady=5)
-
-    frame_lista.columnconfigure([0,2,3], weight=0)
-    frame_lista.columnconfigure(1, weight=1)
-
-    lista_atualizada()
-
-    btn_atualizar = ctk.CTkButton(main, text="Atualizar lista", command=lista_atualizada)
-    btn_atualizar.pack(pady=(20))
-
-    titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
-    titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
-
-    label_status_topo = ctk.CTkLabel(frame_lista, text="Status")
-    label_status_topo.grid(row=1, column=0, padx=(15))
-
-    label_atividade_topo = ctk.CTkLabel(frame_lista, text="Atividade")
-    label_atividade_topo.grid(row=1, column=1, padx=(5,15), sticky="w")
-
-    label_dia_topo = ctk.CTkLabel(frame_lista, text="Dia")
-    label_dia_topo.grid(row=1, column=2, padx=(15))
-
-    label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
-    label_hora_topo.grid(row=1, column=3, padx=(15))
-    
     def lista_atualizada():
         titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
         titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
@@ -199,10 +152,60 @@ def main():
 
             label_hora = ctk.CTkLabel(frame_lista, text=tarefa["hora"])
             label_hora.grid(row=i, column=3, padx=(15))
+            
+    main = ctk.CTk()
+    main.title("My Tasks")
+    main.geometry("500x600")
 
 
 
-def confirma():
+    titulo_main = ctk.CTkLabel(main, text="My Tasks", font=("Helvetica", 16))
+    titulo_main.pack(pady=(20, 10))
+
+    #Frame botões
+    frame_botoes = ctk.CTkFrame(main, width=500, fg_color="transparent")
+    frame_botoes.pack(pady=10)
+
+    btn_criar_tarefa = ctk.CTkButton(frame_botoes, text="Criar nova tarefa", command=criar_tarefa)
+    btn_criar_tarefa.pack(side="left", padx=(0, 80))
+
+    btn_editar_lista = ctk.CTkButton(frame_botoes, text="Excluir tarefas", command=excluir_tarefas)
+    btn_editar_lista.pack(side="right", padx=(80, 0))
+
+
+    # Frame de lista de atividades
+    frame_lista = ctk.CTkScrollableFrame(main, width=430, height=400)
+    frame_lista.pack(pady=5)
+
+    frame_lista.columnconfigure([0,2,3], weight=0)
+    frame_lista.columnconfigure(1, weight=1)
+
+
+    btn_atualizar = ctk.CTkButton(main, text="Atualizar lista", command=lista_atualizada)
+    btn_atualizar.pack(pady=(20))
+
+    titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
+    titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
+
+    label_status_topo = ctk.CTkLabel(frame_lista, text="Status")
+    label_status_topo.grid(row=1, column=0, padx=(15))
+
+    label_atividade_topo = ctk.CTkLabel(frame_lista, text="Atividade")
+    label_atividade_topo.grid(row=1, column=1, padx=(5,15), sticky="w")
+
+    label_dia_topo = ctk.CTkLabel(frame_lista, text="Dia")
+    label_dia_topo.grid(row=1, column=2, padx=(15))
+
+    label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
+    label_hora_topo.grid(row=1, column=3, padx=(15))
+    
+
+    main.mainloop()
+
+
+
+def confirmar_login():
+    login_win.destroy()
     main()
 
 def confirmar_cadastro(novo_user, nova_senha):
@@ -228,7 +231,7 @@ def cadastro():
     nova_senha_label = ctk.CTkLabel(cadastro_win, text="Senha")
     nova_senha_label.grid(row=2,column=0, padx=15, pady=10)
 
-    nova_senha_entry = ctk.CTkEntry(cadastro_win, placeholder_text="Crie uma senha")
+    nova_senha_entry = ctk.CTkEntry(cadastro_win, placeholder_text="Crie uma senha", show="*")
     nova_senha_entry.grid(row=2,column=1, padx=15, pady=10)
 
     cadastro_win.columnconfigure(0, weight=1)
@@ -263,14 +266,14 @@ user_entry.grid(row=1,column=1, padx=15, pady=10)
 senha_label = ctk.CTkLabel(login_win, text="Senha")
 senha_label.grid(row=2,column=0, padx=15, pady=10)
 
-senha_entry = ctk.CTkEntry(login_win)
+senha_entry = ctk.CTkEntry(login_win, show="*")
 senha_entry.grid(row=2,column=1, padx=15, pady=10)
 
 login_win.columnconfigure(0, weight=1)
 login_win.columnconfigure(1, weight=1)
 
 # Botões
-btn_confirma = ctk.CTkButton(login_win, text="Confirma", command=confirma)
+btn_confirma = ctk.CTkButton(login_win, text="Confirma", command=confirmar_login)
 btn_confirma.grid(row=3, column=0, pady=10)
 
 btn_cadastro = ctk.CTkButton(login_win, text="Cadastrar usuário", command=cadastro)
