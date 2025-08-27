@@ -116,9 +116,11 @@ def excluir_tarefas():
     btn_excluir.pack(pady=20)
 
 def main():
-    main = ctk.CTk()
+    main = ctk.CTkToplevel()
     main.title("My Tasks")
     main.geometry("500x600")
+    main.attributes("-topmost", True)
+
 
     titulo_main = ctk.CTkLabel(main, text="My Tasks", font=("Helvetica", 16))
     titulo_main.pack(pady=(20, 10))
@@ -200,6 +202,46 @@ def main():
 
 
 
+def confirma():
+    main()
+
+def confirmar_cadastro(novo_user, nova_senha):
+    pass
+    
+def cadastro():
+    cadastro_win = ctk.CTkToplevel()
+    cadastro_win.title("Cadastro")
+    cadastro_win.geometry("400x250")
+    cadastro_win.focus()
+    cadastro_win.attributes("-topmost", True)
+
+    titulo_login = ctk.CTkLabel(cadastro_win, text="Cadastro de usuário")
+    titulo_login.grid(row=0,column=0,columnspan=2, pady=10)
+
+    # Rótulos e entradas
+    novo_user_label = ctk.CTkLabel(cadastro_win, text="Usuário")
+    novo_user_label.grid(row=1,column=0, padx=15, pady=10)
+
+    novo_user_entry = ctk.CTkEntry(cadastro_win, placeholder_text="Digite um nome de usuário")
+    novo_user_entry.grid(row=1,column=1, padx=15, pady=10)
+
+    nova_senha_label = ctk.CTkLabel(cadastro_win, text="Senha")
+    nova_senha_label.grid(row=2,column=0, padx=15, pady=10)
+
+    nova_senha_entry = ctk.CTkEntry(cadastro_win, placeholder_text="Crie uma senha")
+    nova_senha_entry.grid(row=2,column=1, padx=15, pady=10)
+
+    cadastro_win.columnconfigure(0, weight=1)
+    cadastro_win.columnconfigure(1, weight=1)
+
+    # Botões
+    btn_confirma = ctk.CTkButton(cadastro_win, text="Confirmar", command=confirmar_cadastro(novo_user_entry.get(), nova_senha_entry.get()))
+    btn_confirma.grid(row=4, column=0, pady=10)
+
+    btn_cadastro = ctk.CTkButton(cadastro_win, text="Cancelar", command=cadastro_win.destroy)
+    btn_cadastro.grid(row=4, column=1, pady=5)
+
+
 login_win = ctk.CTk()
 login_win.title("Login")
 login_win.geometry("400x250")
@@ -228,10 +270,10 @@ login_win.columnconfigure(0, weight=1)
 login_win.columnconfigure(1, weight=1)
 
 # Botões
-btn_confirma = ctk.CTkButton(login_win, text="Confirma")
+btn_confirma = ctk.CTkButton(login_win, text="Confirma", command=confirma)
 btn_confirma.grid(row=3, column=0, pady=10)
 
-btn_cadastro = ctk.CTkButton(login_win, text="Cadastrar usuário")
+btn_cadastro = ctk.CTkButton(login_win, text="Cadastrar usuário", command=cadastro)
 btn_cadastro.grid(row=3, column=1, pady=5)
 
 # Iniciar a aplicação
