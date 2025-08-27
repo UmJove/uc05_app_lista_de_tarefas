@@ -29,7 +29,8 @@ def lista_atualizada():
         tarefas = []
 
     for i, tarefa in enumerate(tarefas, start=2):
-        checkbox = ctk.CTkCheckBox(frame_lista, text="", width=20)
+        check_var = ctk.StringVar() 
+        checkbox = ctk.CTkCheckBox(frame_lista, text="", width=20, variable=check_var, onvalue="on", offvalue="off", checkbox_width=20, checkbox_height=20, corner_radius=10, fg_color="darkgreen", hover_color="green")
         checkbox.grid(row=i, column=0, padx=(15))
 
         label_atividade = ctk.CTkLabel(frame_lista, text=tarefa["atividade"])
@@ -151,7 +152,6 @@ def excluir_tarefas():
     btn_excluir.pack(pady=20)
 
 
-
 # Definino modo e core pardrões
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
@@ -159,7 +159,6 @@ ctk.set_default_color_theme("blue")
 main = ctk.CTk()
 main.title("My Tasks")
 main.geometry("500x600")
-
 
 titulo_main = ctk.CTkLabel(main, text="My Tasks", font=("Helvetica", 16))
 titulo_main.pack(pady=(20, 10))
@@ -203,9 +202,6 @@ label_dia_topo.grid(row=1, column=2, padx=(15))
 label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
 label_hora_topo.grid(row=1, column=3, padx=(15))
 
-# Placehoder - itens da lista 
-# (podem ser retirados de acordo com o desenvolvimento do código)
 
- # Cabeçalhos
 
 main.mainloop()
