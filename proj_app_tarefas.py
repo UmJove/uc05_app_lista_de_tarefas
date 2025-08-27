@@ -97,16 +97,23 @@ def criar_tarefa():
 def excluir_tarefas():
     excluir_tarefas_win = ctk.CTkToplevel()
     excluir_tarefas_win.title("Excluir tarefas")
-    excluir_tarefas_win.geometry("500x300")
+    excluir_tarefas_win.geometry("500x530")
     excluir_tarefas_win.focus()
     excluir_tarefas_win.attributes('-topmost', True)
 
+    ctk.CTkLabel(excluir_tarefas_win, text="Excluir tarefas", font=("Helvetica", 14)).pack(pady=(20,10))
+    
+    frame_lista_excluir = ctk.CTkScrollableFrame(excluir_tarefas_win, width=430, height=350)
+    frame_lista_excluir.pack(pady=5)
+    frame_lista_excluir.columnconfigure([0,2,3], weight=0)
+    frame_lista_excluir.columnconfigure(1, weight=1)
 
     # Cabeçalhos
-    ctk.CTkLabel(excluir_tarefas_win, text="Status").grid(row=0, column=0, padx=15)
-    ctk.CTkLabel(excluir_tarefas_win, text="Atividade").grid(row=0, column=1, padx=15, sticky="w")
-    ctk.CTkLabel(excluir_tarefas_win, text="Data").grid(row=0, column=2, padx=15)
-    ctk.CTkLabel(excluir_tarefas_win, text="Hora").grid(row=0, column=3, padx=15)
+    ctk.CTkLabel(frame_lista_excluir, text="Selecione tarefa(s) que deseja excluir").grid(row=0, column=0, columnspan=4, pady=(20,10))
+
+    ctk.CTkLabel(frame_lista_excluir, text="Atividade").grid(row=1, column=1, padx=15, sticky="w")
+    ctk.CTkLabel(frame_lista_excluir, text="Data").grid(row=1, column=2, padx=15)
+    ctk.CTkLabel(frame_lista_excluir, text="Hora").grid(row=1, column=3, padx=15)
 
     # Tenta carregar tarefas
     try:
@@ -117,14 +124,14 @@ def excluir_tarefas():
 
     # Guarda checkboxes com as tarefas
     checkboxes = []
-    for i, tarefa in enumerate(tarefas, start=1):
+    for i, tarefa in enumerate(tarefas, start=2):
         var = ctk.BooleanVar()
-        checkbox = ctk.CTkCheckBox(excluir_tarefas_win, variable=var, text="")
-        checkbox.grid(row=i, column=0, padx=15)
+        checkbox = ctk.CTkCheckBox(frame_lista_excluir, variable=var, text="", width=15)
+        checkbox.grid(row=i, column=0, padx=(15,5), sticky="e")
 
-        ctk.CTkLabel(excluir_tarefas_win, text=tarefa["atividade"]).grid(row=i, column=1, padx=15, sticky="w")
-        ctk.CTkLabel(excluir_tarefas_win, text=tarefa["data"]).grid(row=i, column=2, padx=15)
-        ctk.CTkLabel(excluir_tarefas_win, text=tarefa["hora"]).grid(row=i, column=3, padx=15)
+        ctk.CTkLabel(frame_lista_excluir, text=tarefa["atividade"]).grid(row=i, column=1, padx=(5,15), sticky="w")
+        ctk.CTkLabel(frame_lista_excluir, text=tarefa["data"]).grid(row=i, column=2, padx=15)
+        ctk.CTkLabel(frame_lista_excluir, text=tarefa["hora"]).grid(row=i, column=3, padx=15)
 
         checkboxes.append((var, tarefa))
 
@@ -141,7 +148,7 @@ def excluir_tarefas():
         excluir_tarefas_win.destroy()
 
     btn_excluir = ctk.CTkButton(excluir_tarefas_win, text="Excluir selecionadas", command=confirmar_exclusao)
-    btn_excluir.grid(row=len(tarefas)+1, column=0, columnspan=4, pady=10)
+    btn_excluir.pack(pady=20)
 
 
 
@@ -179,7 +186,7 @@ frame_lista.columnconfigure(1, weight=1)
 lista_atualizada()
 
 btn_atualizar = ctk.CTkButton(main, text="Atualizar lista", command=lista_atualizada)
-btn_atualizar.pack(pady=(5, 10))
+btn_atualizar.pack(pady=(20))
 
 titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
 titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)

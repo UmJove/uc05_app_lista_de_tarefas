@@ -51,6 +51,9 @@ O que podemos fazer é olhar para frente, aprender com o que vivemos e decidir c
 
 
 
+
+
+
 def deletar_tarefa(atividade, data, hora, parent=None):
     try:
         with open("tarefas.json", "r") as f:
