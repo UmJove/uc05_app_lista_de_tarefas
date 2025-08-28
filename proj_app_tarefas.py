@@ -138,10 +138,17 @@ def main():
                 tarefas = json.load(f)
         except (FileNotFoundError, json.JSONDecodeError):
             tarefas = []
+        
+        def atualizar_status_concluida(index,var):
+            with open("tarefas.json", "r") as f:
+                tarefas = json.load(f)
+            tarefas[index]["concluida"] = var.get()
+            with open("tarefas.json", "w") as f:
+                json.dump(tarefas, f, indent=4)
 
         for i, tarefa in enumerate(tarefas, start=2):
-            check_var = ctk.StringVar() 
-            checkbox = ctk.CTkCheckBox(frame_lista, text="", width=20, variable=check_var, onvalue="on", offvalue="off", checkbox_width=20, checkbox_height=20, corner_radius=10, fg_color="darkgreen", hover_color="green")
+            check_var = ctk.BooleanVar(value=tarefa.get("concluida", False)) 
+            checkbox = ctk.CTkCheckBox(frame_lista, text="", width=20, variable=check_var, command=lambda idx=i, v=check_var: atualizar_status_concluida(idx, v), checkbox_width=20, checkbox_height=20, corner_radius=10, fg_color="darkgreen", hover_color="green")
             checkbox.grid(row=i, column=0, padx=(15))
 
             label_atividade = ctk.CTkLabel(frame_lista, text=tarefa["atividade"])

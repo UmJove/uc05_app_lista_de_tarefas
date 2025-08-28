@@ -31,7 +31,8 @@ O que podemos fazer é olhar para frente, aprender com o que vivemos e decidir c
         tarefas.append({
             "atividade": atividade,
             "data": data,
-            "hora": hora
+            "hora": hora,
+            "conccluida": False
         })
 
         # Salva de volta
