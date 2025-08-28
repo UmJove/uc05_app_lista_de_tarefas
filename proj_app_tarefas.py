@@ -3,13 +3,15 @@ import customtkinter as ctk
 from tkinter import messagebox
 from back import salvar
 from back import deletar_tarefa
+import back
 import json
-
 
 
 
 # Adicionar tarefa
 def criar_tarefa():
+    
+    
     nova_tarefa = ctk.CTkToplevel()
     nova_tarefa.title("Nova tarefa")
     nova_tarefa.geometry("450x200")
@@ -80,10 +82,13 @@ def excluir_tarefas():
     ctk.CTkLabel(frame_lista_excluir, text="Data").grid(row=1, column=2, padx=15)
     ctk.CTkLabel(frame_lista_excluir, text="Hora").grid(row=1, column=3, padx=15)
 
-    # Tenta carregar tarefas
+    
     try:
         with open("tarefas.json", "r") as f:
             tarefas = json.load(f)
+
+
+        tarefas = [t for t in tarefas if t["usuario"] == back.user]
     except (FileNotFoundError, json.JSONDecodeError):
         tarefas = []
 
@@ -108,7 +113,7 @@ def excluir_tarefas():
         
         # Chama a função do back para deletar cada tarefa marcada
         for tarefa in selecionadas:
-            deletar_tarefa(tarefa["atividade"], tarefa["data"], tarefa["hora"], parent=excluir_tarefas_win)
+            deletar_tarefa(tarefa["atividade"], tarefa["data"], tarefa["hora"], back.user, parent=excluir_tarefas_win)
 
         excluir_tarefas_win.destroy()
 
@@ -117,6 +122,10 @@ def excluir_tarefas():
 
 def main():
     def lista_atualizada():
+        for widget in frame_lista.winfo_children():
+            widget.destroy()
+            
+            
         titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
         titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
 
@@ -132,10 +141,13 @@ def main():
         label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
         label_hora_topo.grid(row=1, column=3, padx=(15))
 
-        # Lê tarefas do JSON
+  
         try:
             with open("tarefas.json", "r") as f:
                 tarefas = json.load(f)
+
+            tarefas = [t for t in tarefas if t["usuario"] == back.user]
+
         except (FileNotFoundError, json.JSONDecodeError):
             tarefas = []
 
@@ -202,14 +214,6 @@ def main():
 
     main.mainloop()
 
-
-
-def confirmar_login():
-    login_win.destroy()
-    main()
-
-def confirmar_cadastro(novo_user, nova_senha):
-    pass
     
 def cadastro():
     cadastro_win = ctk.CTkToplevel()
@@ -238,46 +242,107 @@ def cadastro():
     cadastro_win.columnconfigure(1, weight=1)
 
     # Botões
-    btn_confirma = ctk.CTkButton(cadastro_win, text="Confirmar", command=confirmar_cadastro(novo_user_entry.get(), nova_senha_entry.get()))
+    btn_confirma = ctk.CTkButton(cadastro_win, text="Confirmar", command=lambda:confirmar_cadastro(novo_user_entry.get(), nova_senha_entry.get()))
     btn_confirma.grid(row=4, column=0, pady=10)
 
     btn_cadastro = ctk.CTkButton(cadastro_win, text="Cancelar", command=cadastro_win.destroy)
     btn_cadastro.grid(row=4, column=1, pady=5)
+    
+    
+def confirmar_cadastro(novo_user, nova_senha, parent=None):
+    try:
+        with open("users.json", "r") as f:
+            users = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        users = []
+
+    # Verificar se usuário já existe
+    for u in users:
+        if u["usuario"] == novo_user:
+            messagebox.showinfo("Usuário já cadastrado", "O usuário já está cadastrado.", parent=parent)
+            return
+
+    users.append({
+        "usuario": novo_user,
+        "senha": nova_senha
+    })
+
+    with open("users.json", "w") as f:
+        json.dump(users, f, indent=4)
+
+    messagebox.showinfo("Sucesso", "Usuário cadastrado com sucesso!", parent=parent)
+                
+                
+def login():
+    global login_win
+    
+    login_win = ctk.CTk()
+    login_win.title("Login")
+    login_win.geometry("400x250")
+
+    # Configurações de aparência
+    ctk.set_appearance_mode("Dark")
+    ctk.set_default_color_theme("blue")
+
+    titulo_login = ctk.CTkLabel(login_win, text="Login")
+    titulo_login.grid(row=0,column=0,columnspan=2, pady=10)
+
+    # Rótulos e entradas
+    user_label = ctk.CTkLabel(login_win, text="Usuário")
+    user_label.grid(row=1,column=0, padx=15, pady=10)
+
+    user_entry = ctk.CTkEntry(login_win)
+    user_entry.grid(row=1,column=1, padx=15, pady=10)
+
+    senha_label = ctk.CTkLabel(login_win, text="Senha")
+    senha_label.grid(row=2,column=0, padx=15, pady=10)
+
+    senha_entry = ctk.CTkEntry(login_win, show="*")
+    senha_entry.grid(row=2,column=1, padx=15, pady=10)
+
+    login_win.columnconfigure(0, weight=1)
+    login_win.columnconfigure(1, weight=1)
+
+    # Botões
+    btn_confirma = ctk.CTkButton(login_win, text="Confirma", command=lambda:confirmar_login(user_entry, senha_entry, login_win))
+    btn_confirma.grid(row=3, column=0, pady=10)
+
+    btn_cadastro = ctk.CTkButton(login_win, text="Cadastrar usuário", command=cadastro)
+    btn_cadastro.grid(row=3, column=1, pady=5)
+
+    # Iniciar a aplicação
+    login_win.mainloop()
 
 
-login_win = ctk.CTk()
-login_win.title("Login")
-login_win.geometry("400x250")
+def confirmar_login(usuario_texto, senha_texto, login_win):
 
-# Configurações de aparência
-ctk.set_appearance_mode("Dark")
-ctk.set_default_color_theme("blue")
+    user_text = usuario_texto.get()
+    senha_text = senha_texto.get()
 
-titulo_login = ctk.CTkLabel(login_win, text="Login")
-titulo_login.grid(row=0,column=0,columnspan=2, pady=10)
+    try:
+        with open("users.json", "r") as us:
+            users = json.load(us)
 
-# Rótulos e entradas
-user_label = ctk.CTkLabel(login_win, text="Usuário")
-user_label.grid(row=1,column=0, padx=15, pady=10)
+        usuario_encontrado = False
+        for u in users:
+            if u["usuario"] == user_text and u["senha"] == senha_text:
+                usuario_encontrado = True
+                break
 
-user_entry = ctk.CTkEntry(login_win)
-user_entry.grid(row=1,column=1, padx=15, pady=10)
+        if not usuario_encontrado:
+            messagebox.showerror("Erro", "Usuário ou senha inválidos.", parent=login_win)
+            return
 
-senha_label = ctk.CTkLabel(login_win, text="Senha")
-senha_label.grid(row=2,column=0, padx=15, pady=10)
+       
+        back.user = user_text
 
-senha_entry = ctk.CTkEntry(login_win, show="*")
-senha_entry.grid(row=2,column=1, padx=15, pady=10)
+        messagebox.showinfo("Sucesso", f"Bem-vindo, {user_text}!", parent=login_win)
+        login_win.destroy()
+        main()
 
-login_win.columnconfigure(0, weight=1)
-login_win.columnconfigure(1, weight=1)
+    except (FileNotFoundError, json.JSONDecodeError):
+        messagebox.showerror("Erro", "Nenhum usuário cadastrado encontrado.", parent=login_win)
+    
 
-# Botões
-btn_confirma = ctk.CTkButton(login_win, text="Confirma", command=confirmar_login)
-btn_confirma.grid(row=3, column=0, pady=10)
 
-btn_cadastro = ctk.CTkButton(login_win, text="Cadastrar usuário", command=cadastro)
-btn_cadastro.grid(row=3, column=1, pady=5)
-
-# Iniciar a aplicação
-login_win.mainloop()
+login()
