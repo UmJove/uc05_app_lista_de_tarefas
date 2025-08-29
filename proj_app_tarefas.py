@@ -154,7 +154,7 @@ def main():
         def atualizar_status_concluida(index,var):
             with open("tarefas.json", "r") as f:
                 tarefas = json.load(f)
-            tarefas[index]["concluida"] = var.get()
+            tarefas[index-2]["concluida"] = var.get()
             with open("tarefas.json", "w") as f:
                 json.dump(tarefas, f, indent=4)
 
