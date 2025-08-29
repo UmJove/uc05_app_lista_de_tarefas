@@ -32,7 +32,7 @@ O que podemos fazer é olhar para frente, aprender com o que vivemos e decidir c
             "atividade": atividade,
             "data": data,
             "hora": hora,
-            "conccluida": False,
+            "concluida": False,
             "usuario": user  # Corrigido de "user" para "usuario"
         })
 
