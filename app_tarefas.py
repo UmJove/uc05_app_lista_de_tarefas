@@ -1,11 +1,14 @@
 # Sistema: Aplicação de gerênciamento de tarefas pesssoais
 import customtkinter as ctk
 from tkinter import messagebox
-from back import salvar
-from back import deletar_tarefa
-import back
+# from back import salvar
+# from back import deletar_tarefa
+from funcoes_back import salvar
+from funcoes_back import atualizar_lista
+from funcoes_back import deletar_tarefa
+from funcoes_back import user
 import json
-
+# from atualizar_lista import atualizar_lista
 
 
 # Adicionar tarefa
@@ -55,7 +58,7 @@ def criar_tarefa():
     frame_btn_nova_tarefa.grid(row=3, column=0, columnspan=4, pady=15)
 
     # btn_salvar  = 
-    btn_salvar = ctk.CTkButton(frame_btn_nova_tarefa, text="Salvar", command=lambda: salvar(atividade=atividade_entry.get(), data=data_entry.get(), hora=hora_entry.get(), parent=nova_tarefa))
+    btn_salvar = ctk.CTkButton(frame_btn_nova_tarefa, text="Salvar", command=lambda: salvar(frame_lista, atividade=atividade_entry.get(), data=data_entry.get(), hora=hora_entry.get(), parent=nova_tarefa))
     btn_salvar.pack(side="left", padx=(0, 50))
 
     btn_cancelar = ctk.CTkButton(frame_btn_nova_tarefa, text="Cancelar", fg_color="darkred", hover_color="#a83232", command=nova_tarefa.destroy)
@@ -88,7 +91,7 @@ def excluir_tarefas():
             tarefas = json.load(f)
 
 
-        tarefas = [t for t in tarefas if t["usuario"] == back.user]
+        tarefas = [t for t in tarefas if t["usuario"] == user]
     except (FileNotFoundError, json.JSONDecodeError):
         tarefas = []
 
@@ -113,113 +116,14 @@ def excluir_tarefas():
         
         # Chama a função do back para deletar cada tarefa marcada
         for tarefa in selecionadas:
-            deletar_tarefa(tarefa["atividade"], tarefa["data"], tarefa["hora"], back.user, parent=excluir_tarefas_win)
+            deletar_tarefa(tarefa["atividade"], tarefa["data"], tarefa["hora"], user, parent=excluir_tarefas_win)
 
         excluir_tarefas_win.destroy()
+
 
     btn_excluir = ctk.CTkButton(excluir_tarefas_win, text="Excluir selecionadas", command=confirmar_exclusao)
     btn_excluir.pack(pady=20)
 
-def main():
-    def lista_atualizada():
-        for widget in frame_lista.winfo_children():
-            widget.destroy()
-            
-            
-        titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
-        titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
-
-        label_status_topo = ctk.CTkLabel(frame_lista, text="Status")
-        label_status_topo.grid(row=1, column=0, padx=(15))
-
-        label_atividade_topo = ctk.CTkLabel(frame_lista, text="Atividade")
-        label_atividade_topo.grid(row=1, column=1, padx=(5,15), sticky="w")
-
-        label_dia_topo = ctk.CTkLabel(frame_lista, text="Dia")
-        label_dia_topo.grid(row=1, column=2, padx=(15))
-
-        label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
-        label_hora_topo.grid(row=1, column=3, padx=(15))
-
-  
-        try:
-            with open("tarefas.json", "r") as f:
-                tarefas = json.load(f)
-
-            tarefas = [t for t in tarefas if t["usuario"] == back.user]
-
-        except (FileNotFoundError, json.JSONDecodeError):
-            tarefas = []
-        
-        def atualizar_status_concluida(index,var):
-            with open("tarefas.json", "r") as f:
-                tarefas = json.load(f)
-            tarefas[index-2]["concluida"] = var.get()
-            with open("tarefas.json", "w") as f:
-                json.dump(tarefas, f, indent=4)
-
-        for i, tarefa in enumerate(tarefas, start=2):
-            check_var = ctk.BooleanVar(value=tarefa.get("concluida", False)) 
-            checkbox = ctk.CTkCheckBox(frame_lista, text="", width=20, variable=check_var, command=lambda idx=i, v=check_var: atualizar_status_concluida(idx, v), checkbox_width=20, checkbox_height=20, corner_radius=10, fg_color="darkgreen", hover_color="green")
-            checkbox.grid(row=i, column=0, padx=(15))
-
-            label_atividade = ctk.CTkLabel(frame_lista, text=tarefa["atividade"])
-            label_atividade.grid(row=i, column=1, padx=(5,15), sticky="w")
-
-            label_dia = ctk.CTkLabel(frame_lista, text=tarefa["data"])
-            label_dia.grid(row=i, column=2, padx=(15))
-
-            label_hora = ctk.CTkLabel(frame_lista, text=tarefa["hora"])
-            label_hora.grid(row=i, column=3, padx=(15))
-            
-    main = ctk.CTk()
-    main.title("My Tasks")
-    main.geometry("500x600")
-
-
-
-    titulo_main = ctk.CTkLabel(main, text="My Tasks", font=("Helvetica", 16))
-    titulo_main.pack(pady=(20, 10))
-
-    #Frame botões
-    frame_botoes = ctk.CTkFrame(main, width=500, fg_color="transparent")
-    frame_botoes.pack(pady=10)
-
-    btn_criar_tarefa = ctk.CTkButton(frame_botoes, text="Criar nova tarefa", command=criar_tarefa)
-    btn_criar_tarefa.pack(side="left", padx=(0, 80))
-
-    btn_editar_lista = ctk.CTkButton(frame_botoes, text="Excluir tarefas", command=excluir_tarefas)
-    btn_editar_lista.pack(side="right", padx=(80, 0))
-
-
-    # Frame de lista de atividades
-    frame_lista = ctk.CTkScrollableFrame(main, width=430, height=400)
-    frame_lista.pack(pady=5)
-
-    frame_lista.columnconfigure([0,2,3], weight=0)
-    frame_lista.columnconfigure(1, weight=1)
-
-
-    btn_atualizar = ctk.CTkButton(main, text="Atualizar lista", command=lista_atualizada)
-    btn_atualizar.pack(pady=(20))
-
-    titulo_lista = ctk.CTkLabel(frame_lista, text="Tarefas", font=("Helvetica", 14))
-    titulo_lista.grid(row=0, column=0, columnspan=4, pady=5)
-
-    label_status_topo = ctk.CTkLabel(frame_lista, text="Status")
-    label_status_topo.grid(row=1, column=0, padx=(15))
-
-    label_atividade_topo = ctk.CTkLabel(frame_lista, text="Atividade")
-    label_atividade_topo.grid(row=1, column=1, padx=(5,15), sticky="w")
-
-    label_dia_topo = ctk.CTkLabel(frame_lista, text="Dia")
-    label_dia_topo.grid(row=1, column=2, padx=(15))
-
-    label_hora_topo = ctk.CTkLabel(frame_lista, text="Horário")
-    label_hora_topo.grid(row=1, column=3, padx=(15))
-    
-
-    main.mainloop()
 
     
 def cadastro():
@@ -281,9 +185,9 @@ def confirmar_cadastro(novo_user, nova_senha, parent=None):
                 
                 
 def login():
-    global login_win
+    # global login_win
     
-    login_win = ctk.CTk()
+    login_win = ctk.CTkToplevel()
     login_win.title("Login")
     login_win.geometry("400x250")
 
@@ -316,13 +220,14 @@ def login():
 
     btn_cadastro = ctk.CTkButton(login_win, text="Cadastrar usuário", command=cadastro)
     btn_cadastro.grid(row=3, column=1, pady=5)
-
-    # Iniciar a aplicação
+    
     login_win.mainloop()
 
 
-def confirmar_login(usuario_texto, senha_texto, login_win):
 
+
+def confirmar_login(usuario_texto, senha_texto, login_win):
+    
     user_text = usuario_texto.get()
     senha_text = senha_texto.get()
 
@@ -341,15 +246,44 @@ def confirmar_login(usuario_texto, senha_texto, login_win):
             return
 
        
-        back.user = user_text
+        # user = user_text
 
         messagebox.showinfo("Sucesso", f"Bem-vindo, {user_text}!", parent=login_win)
         login_win.destroy()
-        main()
+        main.mainloop()
 
     except (FileNotFoundError, json.JSONDecodeError):
         messagebox.showerror("Erro", "Nenhum usuário cadastrado encontrado.", parent=login_win)
     
+
+main = ctk.CTk()
+main.title("My Tasks")
+main.geometry("500x600")
+
+titulo_main = ctk.CTkLabel(main, text="My Tasks", font=("Helvetica", 16))
+titulo_main.pack(pady=(20, 10))
+
+#Frame botões
+frame_botoes = ctk.CTkFrame(main, width=500, fg_color="transparent")
+frame_botoes.pack(pady=10)
+
+btn_criar_tarefa = ctk.CTkButton(frame_botoes, text="Criar nova tarefa", command=criar_tarefa)
+btn_criar_tarefa.pack(side="left", padx=(0, 80))
+
+btn_editar_lista = ctk.CTkButton(frame_botoes, text="Excluir tarefas", command=excluir_tarefas)
+btn_editar_lista.pack(side="right", padx=(80, 0))
+
+
+# Frame de lista de atividades
+frame_lista = ctk.CTkScrollableFrame(main, width=430, height=400)
+frame_lista.pack(pady=5)
+
+frame_lista.columnconfigure([0,2,3], weight=0)
+frame_lista.columnconfigure(1, weight=1)
+
+    
+# back.atualizar_lista(frame_lista)
+
 
 
 login()
