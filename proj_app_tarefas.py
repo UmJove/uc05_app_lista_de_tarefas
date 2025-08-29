@@ -6,8 +6,6 @@ from back import deletar_tarefa
 import back
 import json
 
-
-
 # Adicionar tarefa
 def criar_tarefa():
     
@@ -75,7 +73,7 @@ def excluir_tarefas():
     frame_lista_excluir.columnconfigure([0,2,3], weight=0)
     frame_lista_excluir.columnconfigure(1, weight=1)
 
-    # Cabeçalhos
+    
     ctk.CTkLabel(frame_lista_excluir, text="Selecione tarefa(s) que deseja excluir").grid(row=0, column=0, columnspan=4, pady=(20,10))
 
     ctk.CTkLabel(frame_lista_excluir, text="Atividade").grid(row=1, column=1, padx=15, sticky="w")
@@ -172,6 +170,8 @@ def main():
             label_hora = ctk.CTkLabel(frame_lista, text=tarefa["hora"])
             label_hora.grid(row=i, column=3, padx=(15))
             
+    
+    
     main = ctk.CTk()
     main.title("My Tasks")
     main.geometry("500x600")
