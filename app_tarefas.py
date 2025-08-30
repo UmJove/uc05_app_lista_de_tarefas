@@ -3,12 +3,12 @@ import customtkinter as ctk
 from tkinter import messagebox
 # from back import salvar
 # from back import deletar_tarefa
-from funcoes_back import salvar
-from funcoes_back import atualizar_lista
+from funcoes_back import atualizar_lista, salvar
 from funcoes_back import deletar_tarefa
-from funcoes_back import user
 import json
 # from atualizar_lista import atualizar_lista
+
+user = ""
 
 
 # Adicionar tarefa
@@ -58,7 +58,7 @@ def criar_tarefa():
     frame_btn_nova_tarefa.grid(row=3, column=0, columnspan=4, pady=15)
 
     # btn_salvar  = 
-    btn_salvar = ctk.CTkButton(frame_btn_nova_tarefa, text="Salvar", command=lambda: salvar(frame_lista, atividade=atividade_entry.get(), data=data_entry.get(), hora=hora_entry.get(), parent=nova_tarefa))
+    btn_salvar = ctk.CTkButton(frame_btn_nova_tarefa, text="Salvar", command=lambda: salvar(user, frame_lista, atividade=atividade_entry.get(), data=data_entry.get(), hora=hora_entry.get(), parent=nova_tarefa))
     btn_salvar.pack(side="left", padx=(0, 50))
 
     btn_cancelar = ctk.CTkButton(frame_btn_nova_tarefa, text="Cancelar", fg_color="darkred", hover_color="#a83232", command=nova_tarefa.destroy)
@@ -109,6 +109,7 @@ def excluir_tarefas():
         checkboxes.append((var, tarefa))
 
     def confirmar_exclusao():
+        global user
         selecionadas = [t for var, t in checkboxes if var.get()]
         if not selecionadas:
             messagebox.showinfo("Aviso", "Nenhuma tarefa selecionada para exclusão.", parent=excluir_tarefas_win)
@@ -117,7 +118,7 @@ def excluir_tarefas():
         # Chama a função do back para deletar cada tarefa marcada
         for tarefa in selecionadas:
             deletar_tarefa(tarefa["atividade"], tarefa["data"], tarefa["hora"], user, parent=excluir_tarefas_win)
-
+        atualizar_lista(user, frame_lista)
         excluir_tarefas_win.destroy()
 
 
@@ -227,7 +228,7 @@ def login():
 
 
 def confirmar_login(usuario_texto, senha_texto, login_win):
-    
+    global user
     user_text = usuario_texto.get()
     senha_text = senha_texto.get()
 
@@ -241,12 +242,12 @@ def confirmar_login(usuario_texto, senha_texto, login_win):
                 usuario_encontrado = True
                 break
 
+        if usuario_encontrado:
+            user = user_text
+            
         if not usuario_encontrado:
             messagebox.showerror("Erro", "Usuário ou senha inválidos.", parent=login_win)
             return
-
-       
-        # user = user_text
 
         messagebox.showinfo("Sucesso", f"Bem-vindo, {user_text}!", parent=login_win)
         login_win.destroy()

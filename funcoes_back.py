@@ -4,10 +4,9 @@ from tkinter import messagebox
 import customtkinter as ctk
 
 
-user = ""
 
 
-def salvar(frame_lista, atividade, data, hora, parent=None):
+def salvar(user, frame_lista, atividade, data, hora, parent=None):
     agora = datetime.now()
     try:
         data_obj = datetime.strptime(data, "%d/%m/%Y")
@@ -42,7 +41,7 @@ O que podemos fazer é olhar para frente, aprender com o que vivemos e decidir c
             json.dump(tarefas, f, indent=4)
 
         messagebox.showinfo("Sucesso", "Tarefa criada com sucesso!", parent=parent)
-        atualizar_lista(frame_lista)
+        atualizar_lista(user, frame_lista)
 
     except ValueError:
         messagebox.showerror(
@@ -73,9 +72,10 @@ def deletar_tarefa(atividade, data, hora, usuario_logado, parent=None):
         json.dump(tarefas_filtradas, f, indent=4)
 
     messagebox.showinfo("Sucesso", "Tarefa deletada com sucesso!", parent=parent)
+    
 
 
-def atualizar_lista(frame_lista):
+def atualizar_lista(user, frame_lista):
         for widget in frame_lista.winfo_children():
             widget.destroy()
             
